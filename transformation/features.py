@@ -1,7 +1,7 @@
 import pandas as pd
 import numpy as np
 
-class FeatureEngineering:
+class Category:
   def __init__(self):
     self.data = pd.read_csv("data/silver/weather_clean.csv")
     self.df = pd.DataFrame(self.data)
@@ -22,13 +22,170 @@ class FeatureEngineering:
     self.df["prec_category"] = prec_cat
     
   def prec_probability_category(self):
-
     bins = [0, 20, 40, 60, 80, 100]
-
     labels = ["Very Low", "Low", "Moderate", "High", "Very High"]
     prec_prob_cat = pd.cut(self.df["precip_probability"], bins=bins, labels=labels, include_lowest=True)
     self.df["prec_probability_category"] = prec_prob_cat
   
-dat =FeatureEngineering()
-uuh = dat.temp_category()
-print(uuh)
+  
+  def wind_category(self):
+    bins = [5,10,20,30,40,float("inf")]
+    labels = ["weak", "normal","stong", "very strong", "extreme"]
+    wind_cat = pd.cut(self.df["wind_max"], bins= bins, labels=labels, include_lowest=True)
+    self.df["wind_category"] = wind_cat
+    
+    
+  def gust_category(self):
+
+    bins = [0, 30, 50, 70, 90, float("inf")]
+
+    labels = ["weak", "normal", "strong", "very strong", "extreme"]
+
+    gust_cat = pd.cut(
+        self.df["wind_gusts"],
+        bins=bins,
+        labels=labels,
+        include_lowest=True
+    )
+
+    self.df["gust_category"] = gust_cat
+    
+    
+  
+  def weather_code_category(self):
+
+    risk_values = {
+        0: "Clear",
+        1: "Low",
+        2: "Low",
+        3: "Moderate",
+        45: "Moderate",
+        48: "Moderate",
+        51: "Moderate",
+        53: "Moderate",
+        55: "High",
+        56: "High",
+        57: "High",
+        61: "High",
+        63: "High",
+        65: "Very High",
+        66: "Very High",
+        67: "Very High",
+        71: "High",
+        73: "High",
+        75: "Very High",
+        77: "Very High",
+        80: "High",
+        81: "High",
+        82: "Very High",
+        85: "Very High",
+        86: "Very High",
+        95: "Extreme",
+        96: "Extreme",
+        99: "Extreme"
+    }
+
+    self.df["weather_category"] = self.df["weather_code"].map(risk_values)
+    
+  def save_category(self):
+    self.temp_category()
+    self.prec_category()
+    self.prec_probability_category()
+    self.wind_category()
+    self.gust_category()
+    self.weather_code_category()
+    self.df.to_csv("data/gold/weather_categories.csv")
+    
+    
+class Risk:
+  def __init__(self):
+    self.data = pd.read_csv("data/gold/weather_categories.csv")
+    self.df = pd.DataFrame(self.data)
+    
+  def temp_risk(self):
+    risk_values = {
+      "cold": 20,
+      "Mild": 0,
+      "Normal": 0,
+      "Hot": 50,
+      "Extreme": 100
+    }
+    
+    self.df["temp_risk"] = self.df["temp_category"].map(risk_values)
+  def prec_risk(self):
+    risk_values = {
+      "None" : 0,
+      "Low" : 25,
+      "Moderate": 60,
+      "Heavy": 100
+    }
+    
+    self.df["prec_risk"] = self.df["prec_category"].map(risk_values)
+    
+  def prec_probability_risk(self):
+    risk_values = {
+      "Very Low" : 0,
+      "Low" : 25,
+      "Moderate": 50,
+      "High" : 75,
+      "Very High" : 100
+      }
+    
+    self.df["prec_probaility_risk"] = self.df["prec_probability_category"].map(risk_values)
+  
+  
+  def wind_risk(self):
+    risk_values = {
+        "weak": 0,
+        "normal": 25,
+        "stong": 50,
+        "very strong": 75,
+        "extreme": 100
+    }
+
+    self.df["wind_risk"] = self.df["wind_category"].map(risk_values)
+    
+    
+  def gust_risk(self):
+
+    risk_values = {
+        "weak": 0,
+        "normal": 25,
+        "strong": 50,
+        "very strong": 75,
+        "extreme": 100
+    }
+
+    self.df["gust_risk"] = self.df["gust_category"].map(risk_values)
+    
+    
+    
+  def weather_code_risk(self):
+
+    risk_values = {
+        "Clear": 0,
+        "Low": 25,
+        "Moderate": 50,
+        "High": 75,
+        "Very High": 90,
+        "Extreme": 100
+    }
+
+    self.df["weather_code_risk"] = self.df["weather_category"].map(risk_values)
+    
+    
+  def save_risk(self):
+    self.temp_risk()
+    self.prec_risk()
+    self.prec_probability_risk()
+    self.wind_risk()
+    self.gust_risk()
+    self.weather_code_risk()
+    self.df.to_csv("data/gold/weather_risk.csv")
+    
+    
+dat =Category()
+dat.save_category()
+
+dat2 = Risk()
+dat2.save_risk()
