@@ -16,10 +16,12 @@ class Category:
   
   
   def prec_category(self):
-    bins = [0, 0.1, 0.3, 0.5, 1]
-    labels = ["None", "Low", "Moderate", "Heavy"]
-    prec_cat = pd.cut(self.df["precipitation"], bins = bins, labels=labels, include_lowest=True)
-    self.df["prec_category"] = prec_cat
+      bins = [-float("inf"), 0, 0.1, 0.5, 1, float("inf")]
+      labels = ["zero", "Low", "Moderate", "Heavy", "Very Heavy"]
+
+      prec_cat = pd.cut(self.df["precipitation"], bins=bins, labels=labels, include_lowest=True)
+
+      self.df["prec_category"] = prec_cat
     
   def prec_probability_category(self):
     bins = [0, 20, 40, 60, 80, 100]
@@ -101,6 +103,8 @@ class Risk:
   def __init__(self):
     self.data = pd.read_csv("data/gold/weather_categories.csv")
     self.df = pd.DataFrame(self.data)
+    print(self.df["temp_category"].unique())
+    print(self.df["prec_category"].unique())
     
   def temp_risk(self):
     risk_values = {
@@ -131,7 +135,7 @@ class Risk:
       "Very High" : 100
       }
     
-    self.df["prec_probaility_risk"] = self.df["prec_probability_category"].map(risk_values)
+    self.df["prec_probability_risk"] = self.df["prec_probability_category"].map(risk_values)
   
   
   def wind_risk(self):
@@ -174,6 +178,22 @@ class Risk:
     self.df["weather_code_risk"] = self.df["weather_category"].map(risk_values)
     
     
+  def risk_score(self):
+    self.df["risk_score"] =  (
+    self.df["temp_risk"] * 0.20 +
+    self.df["prec_risk"] * 0.15 +
+    self.df["prec_probability_risk"] * 0.15 +
+    self.df["wind_risk"] * 0.20 +
+    self.df["gust_risk"] * 0.20 +
+    self.df["weather_code_risk"] * 0.10
+    )
+    
+    
+  def risk_level(self):
+    bins = [-1, 24, 49, 74, 100]
+    labels = ["Low", "Moderate", "High", "Extreme"]
+    self.df["risk_level"] = pd.cut(self.df["risk_score"], bins=bins, labels=labels)
+    
   def save_risk(self):
     self.temp_risk()
     self.prec_risk()
@@ -181,6 +201,22 @@ class Risk:
     self.wind_risk()
     self.gust_risk()
     self.weather_code_risk()
+    self.risk_score()
+    self.risk_level()
+    
+    print(self.df[
+    [
+        "temp_risk",
+        "prec_risk",
+        "prec_probability_risk",
+        "wind_risk",
+        "gust_risk",
+        "weather_code_risk"
+    ]
+].isna().sum())
+    
+    print(self.df.head())
+    print(self.df.shape)
     self.df.to_csv("data/gold/weather_risk.csv")
     
     
