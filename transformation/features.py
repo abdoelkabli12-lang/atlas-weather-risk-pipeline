@@ -118,11 +118,12 @@ class Risk:
     self.df["temp_risk"] = self.df["temp_category"].map(risk_values)
   def prec_risk(self):
     risk_values = {
-      "None" : 0,
+      "zero" : 0,
       "Low" : 25,
       "Moderate": 60,
-      "Heavy": 100
-    }
+      "Heavy": 80,
+      "Very Heavy": 100 
+    } 
     
     self.df["prec_risk"] = self.df["prec_category"].map(risk_values)
     
