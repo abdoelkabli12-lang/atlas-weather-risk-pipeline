@@ -96,7 +96,7 @@ class Category:
     self.wind_category()
     self.gust_category()
     self.weather_code_category()
-    self.df.to_csv("data/gold/weather_categories.csv")
+    self.df.to_csv("data/gold/weather_categories.csv", index=False)
     
     
 class Risk:
@@ -218,7 +218,9 @@ class Risk:
     
     print(self.df.head())
     print(self.df.shape)
-    self.df.to_csv("data/gold/weather_risk.csv")
+    self.df.reset_index(drop=True)
+    self.df.insert(0, "weather_id", range(1, len(self.df) + 1))
+    self.df.to_csv("data/gold/weather_risk.csv", index=False)
     
     
 dat =Category()
