@@ -1,17 +1,14 @@
-FROM python:3.14-slim
+FROM python:3.12-slim
 
 WORKDIR /app
+ENV PYTHONPATH=/app
 
-RUN apt-get update && apt-get install -y \
-    build-essential \
-    curl \
-    git \
-    && rm -rf /var/lib/apt/lists/*
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
 
-RUN git clone https://github.com/streamlit/streamlit-example.git .
+COPY dashboard ./dashboard/
+COPY load ./load
 
 EXPOSE 8501
 
-RUN python -m pip install -r requirements.txt
-
-ENTRYPOINT ["python", "streamlit", "run", "streamlit_app.py", "--server.port=8501", "--server.address=0.0.0.0"]
+ENTRYPOINT ["streamlit", "run", "dashboard/streamlit_app.py", "--server.port=8501", "--server.address=0.0.0.0"]

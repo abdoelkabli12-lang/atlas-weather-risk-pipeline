@@ -1,15 +1,29 @@
 services:
+  app:
+    build: .
+    ports:
+      - "8501:8501"
+    depends_on:
+      - postgres
+    environment:
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: weather_db
+      DB_USER: atlas_weather
+      DB_PASSWORD: abdo2007123@
   postgres:
     image: postgres:17
     container_name: weather_postgres
     restart: unless-stopped
     environment:
-      POSTGRES_USER: atlas_weather
-      POSTGRES_PASSWORD: abdo2007123@
-      POSTGRES_DB: weather_db
+      DB_USER: atlas_weather
+      DB_PASSWORD: abdo2007123@
+      DB_NAME: weather_db
     ports:
       - "5433:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
 volumes:
   postgres_data:
+
+  

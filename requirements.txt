@@ -8,3 +8,5 @@ plotly
 python-dotenv
 pandera
 pytest
+altair
+streamlit-searchbox
