@@ -2,7 +2,7 @@ services:
   app:
     build: .
     ports:
-      - "8501:8501"
+      - "8502:8501"
     depends_on:
       - postgres
     environment:
@@ -11,19 +11,27 @@ services:
       DB_NAME: weather_db
       DB_USER: atlas_weather
       DB_PASSWORD: abdo2007123@
+    volumes:
+      - ./dashboard:/app/dashboard
+      - ./load:/app/load
+      - ./.streamlit:/app/.streamlit
+    command: >
+      streamlit run dashboard/streamlit_app.py
+      --server.port=8501
+      --server.address=0.0.0.0
+
   postgres:
     image: postgres:17
     container_name: weather_postgres
     restart: unless-stopped
     environment:
-      DB_USER: atlas_weather
-      DB_PASSWORD: abdo2007123@
-      DB_NAME: weather_db
+      POSTGRES_USER: atlas_weather
+      POSTGRES_PASSWORD: abdo2007123@
+      POSTGRES_DB: weather_db
     ports:
       - "5433:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+
 volumes:
   postgres_data:
-
-  
