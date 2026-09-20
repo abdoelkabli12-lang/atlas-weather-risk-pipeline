@@ -4,9 +4,9 @@ import streamlit as st
 from sqlalchemy import MetaData, Table, select
 from load.postgres import engine
 
-# ============================================================
+
 # PAGE CONFIG
-# ============================================================
+
 
 st.set_page_config(
     page_title="Atlas Weather Risk",
@@ -15,9 +15,9 @@ st.set_page_config(
     initial_sidebar_state="expanded",
 )
 
-# ============================================================
+
 # SIMPLE DARK BACKGROUND
-# ============================================================
+
 
 st.markdown(
     """
@@ -34,9 +34,9 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
-# ============================================================
+
 # DB
-# ============================================================
+
 
 metadata = MetaData()
 
@@ -70,9 +70,9 @@ query = (
 df = pd.read_sql(query, engine)
 df["forecast_date"] = pd.to_datetime(df["forecast_date"])
 
-# ============================================================
+
 # SIDEBAR
-# ============================================================
+
 
 st.sidebar.title("Atlas Weather Risk")
 
@@ -101,9 +101,9 @@ risk_filter = st.sidebar.multiselect(
 
 st.sidebar.caption("Bronze → Silver → Gold → PostgreSQL → Streamlit")
 
-# ============================================================
+
 # FILTER
-# ============================================================
+
 
 filtered_df = df.copy()
 
@@ -122,9 +122,9 @@ if risk_filter:
         filtered_df["risk_level"].isin(risk_filter)
     ]
 
-# ============================================================
+
 # HEADER
-# ============================================================
+
 
 st.title("Atlas Weather Risk")
 st.caption(
@@ -136,9 +136,9 @@ if filtered_df.empty:
     st.warning("No forecast data matches the selected filters.")
     st.stop()
 
-# ============================================================
+
 # METRICS
-# ============================================================
+
 
 c1, c2, c3, c4, c5 = st.columns(5)
 
@@ -160,9 +160,9 @@ c5.metric(
     f"{peak['city']} • {peak['forecast_date'].strftime('%d %b %Y')}",
 )
 
-# ============================================================
+
 # RISK BY CITY — ST.BAR_CHART
-# ============================================================
+
 
 st.subheader("Risk by city")
 
@@ -177,9 +177,9 @@ st.bar_chart(
     color="#2dd4bf",
 )
 
-# ============================================================
+
 # RISK DISTRIBUTION + TIMELINE (side by side)
-# ============================================================
+
 
 col_a, col_b = st.columns(2)
 
@@ -213,9 +213,9 @@ with col_b:
         color=["#5eead4", "#818cf8"],
     )
 
-# ============================================================
+
 # CRITICAL FORECAST WINDOWS
-# ============================================================
+
 
 st.subheader("Critical forecast windows")
 
@@ -245,9 +245,9 @@ top10 = top10.rename(columns={
 
 st.dataframe(top10, use_container_width=True, hide_index=True, height=340)
 
-# ============================================================
+
 # CITY SUMMARY
-# ============================================================
+
 
 st.subheader("City summary")
 
@@ -275,9 +275,9 @@ summary = summary.rename(columns={
 
 st.dataframe(summary, use_container_width=True, hide_index=True, height=340)
 
-# ============================================================
+
 # FORECAST EXPLORER
-# ============================================================
+
 
 st.subheader("Forecast explorer")
 
@@ -310,9 +310,9 @@ explorer = explorer.rename(columns={
 
 st.dataframe(explorer, use_container_width=True, hide_index=True, height=420)
 
-# ============================================================
+
 # MAP — ST.MAP
-# ============================================================
+
 
 st.subheader("Geographic risk")
 

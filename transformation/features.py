@@ -223,8 +223,10 @@ class Risk:
     self.df.to_csv("data/gold/weather_risk.csv", index=False)
     
     
-dat =Category()
-dat.save_category()
+    
+if __name__ == "__main__":
+  dat =Category()
+  dat.save_category()
 
-dat2 = Risk()
-dat2.save_risk()
+  dat2 = Risk()
+  dat2.save_risk()

@@ -2,12 +2,6 @@ import pandas as pd
 import numpy as np
 
 
-
-
-
-
-
-
 class CleanData:
     def __init__(self):
         self.data = pd.read_json("data/bronze/weather/weather.json")
