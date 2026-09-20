@@ -1,14 +1,17 @@
 import pandas as pd
 import numpy as np
+from pathlib import Path
 
 
 class CleanData:
     def __init__(self):
-        self.data = pd.read_json("data/bronze/weather/weather.json")
+        project_root = Path(__file__).resolve().parent.parent
+        self.data = pd.read_json(project_root / "data" / "bronze" / "weather" / "weather.json")
         self.df = pd.DataFrame(self.data)
         self.all_days = []
         
     def cleaning_data(self):
+        project_root = Path(__file__).resolve().parent.parent
         for row in self.df.itertuples():
             daily_df = pd.DataFrame(row.daily)
             
@@ -47,6 +50,6 @@ class CleanData:
         weather_clean["date"] = pd.to_datetime(weather_clean["date"])
 
         weather_clean.to_csv(
-            "data/silver/weather_clean.csv",
+            project_root / "data" / "silver" / "weather_clean.csv",
             index=False
         )

@@ -1,9 +1,11 @@
 import pandas as pd
 import numpy as np
+from pathlib import Path
 
+project_root = Path(__file__).resolve().parent.parent
 class Category:
   def __init__(self):
-    self.data = pd.read_csv("data/silver/weather_clean.csv")
+    self.data = pd.read_csv(project_root / "data" / "silver" / "weather_clean.csv")
     self.df = pd.DataFrame(self.data)
     
   def temp_category(self):
@@ -96,12 +98,12 @@ class Category:
     self.wind_category()
     self.gust_category()
     self.weather_code_category()
-    self.df.to_csv("data/gold/weather_categories.csv", index=False)
+    self.df.to_csv(project_root / "data" / "gold" / "weather_categories.csv", index=False)
     
     
 class Risk:
   def __init__(self):
-    self.data = pd.read_csv("data/gold/weather_categories.csv")
+    self.data = pd.read_csv(project_root / "data" / "gold" / "weather_categories.csv")
     self.df = pd.DataFrame(self.data)
     print(self.df["temp_category"].unique())
     print(self.df["prec_category"].unique())
@@ -220,7 +222,7 @@ class Risk:
     print(self.df.shape)
     self.df.reset_index(drop=True)
     self.df.insert(0, "weather_id", range(1, len(self.df) + 1))
-    self.df.to_csv("data/gold/weather_risk.csv", index=False)
+    self.df.to_csv(project_root / "data" / "gold" / "weather_risk.csv", index=False)
     
     
     

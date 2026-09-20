@@ -1,20 +1,24 @@
 from dotenv import load_dotenv
 import os
 from sqlalchemy import Table, MetaData, select, text
-from postgres import engine
+from .postgres import engine
 import pandas as pd
 from collections import defaultdict
+from pathlib import Path
+
+
+project_root = Path(__file__).resolve().parent.parent
 
 load_dotenv()
 
 metadata = MetaData()
 
 def load_to_postgres():
-  cities = pd.read_csv("C:/Users/ycode/Documents/atlas-weather-risk-pipeline/data/bronze/cities/morocco_cities.csv")
+  cities = pd.read_csv(project_root / "data" / "bronze" / "cities" / "morocco_cities.csv")
   df_cities = pd.DataFrame(cities)
-  weather_clean = pd.read_csv("C:/Users/ycode/Documents/atlas-weather-risk-pipeline/data/silver/weather_clean.csv")
+  weather_clean = pd.read_csv(project_root / "data" / "silver" / "weather_clean.csv")
   df_weather1 = pd.DataFrame(weather_clean)
-  weather_risk = pd.read_csv("C:/Users/ycode/Documents/atlas-weather-risk-pipeline/data/gold/weather_risk.csv")
+  weather_risk = pd.read_csv(project_root / "data" / "gold" / "weather_risk.csv")
   df_risk = pd.DataFrame(weather_risk)
 
 

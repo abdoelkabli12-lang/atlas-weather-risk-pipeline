@@ -1,9 +1,11 @@
 import requests as rq
+from pathlib import Path
 
 class Cities:
   def __init__(self):
+    project_root = Path(__file__).resolve().parent.parent
+    self.output = project_root / "data" / "bronze" / "cities" / "morocco_cities.csv"
     self.url = "https://simplemaps.com/static/data/country-cities/ma/ma.csv"
-    self.output = 'data/bronze/cities/morocco_cities.csv'
   def get_cities(self):
     try :
 

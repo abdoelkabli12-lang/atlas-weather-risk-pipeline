@@ -1,13 +1,15 @@
 import requests as rq
 import pandas as pd
 import json
+from pathlib import Path
 
 def get_weather():
+  project_root = Path(__file__).resolve().parent.parent
   url = "https://api.open-meteo.com/v1/forecast"
-  output = f"data/bronze/weather/weather.json"
+  output = project_root / "data" / "bronze" / "weather" / "weather.json"
 
 
-  res = pd.read_csv("data/bronze/cities/morocco_cities.csv")
+  res = pd.read_csv(project_root / "data" / "bronze" / "cities" / "morocco_cities.csv")
   df  = pd.DataFrame(res)
   cols = [0,1,2]
 
