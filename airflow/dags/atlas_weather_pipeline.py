@@ -21,7 +21,7 @@ with DAG(
     catchup=False,
     default_args={
         "retries": 2,
-        "retry_delay": timedelta(minutes=10),
+        "retry_delay": timedelta(minutes=2),
     },
 ) as dag:
 
